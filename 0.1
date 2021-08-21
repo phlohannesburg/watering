@@ -1,0 +1,60 @@
+//configure analog input pins for the sensors in an array for use in the check loop
+int sensor[]={A0, A1, A2, A3};
+//configure digital output pins for the relays in an array for use in the check loop
+int relay[]={2, 3, 4, 5};
+//initialize moisture level variable
+int mLVL=0;
+
+void setup() {
+//enable serial console connection
+Serial.begin(9600);
+//Set up digital pins as OUTPUT pins to the relays
+pinMode(2,OUTPUT);
+pinMode(3,OUTPUT);
+pinMode(4,OUTPUT);
+pinMode(5,OUTPUT);
+//Set up Analog pins as INPUT from the sensors
+pinMode(A0,INPUT);
+pinMode(A1,INPUT);
+pinMode(A2,INPUT);
+pinMode(A3,INPUT);
+//Set up a default state for the relays as HIGH
+digitalWrite(2,HIGH);
+digitalWrite(3,HIGH);
+digitalWrite(4,HIGH);
+digitalWrite(5,HIGH);
+//Allow some time to make sure registers are updated in the Arduino
+delay(500);
+}
+
+void loop() {
+for (int check=0;check<=3;check++){
+Serial.print("Moisture Level for Sensor ");
+Serial.print(check);
+Serial.print(": ");
+mLVL=analogRead(sensor[check]);
+Serial.println(mLVL);
+
+//remember to change the moisture level check for your plants' needs
+if(mLVL>550) {
+  digitalWrite(relay[check],LOW);
+  Serial.print("Relay ");
+  Serial.print(check);
+  Serial.print(" is now LOW");
+  //This delay can be a lot lower, I just used a 1 sec delay to make the
+  //console less cluttered for debugging
+  delay(1000);
+}
+
+else {
+  digitalWrite(relay[check],HIGH);
+  Serial.print("Relay ");
+  Serial.print(check);
+  Serial.print(" is now HIGH");
+  //This delay can also be a lot lower, I just used a 1 sec delay to make the
+  //console less cluttered for debugging
+  delay(1000);
+} 
+//this just does a carriage return for formatting in the serial output
+Serial.println();
+}}
